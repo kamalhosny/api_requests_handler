@@ -1,48 +1,50 @@
 module ApiRequestsHandler
   class Handler
     ## Attributes
-    attr_accessor :method, :app_id, :retry_count
+    attr_accessor :method, :app, :retry_count, :data, :headers
 
     ## Constructor
-    def initilaize(method: 'get', app_id:, retry_count: 0, options: {})
+    def initilaize(method: :get, app: nil, retry_count: 0, data: {}, headers: {})
       @method = method
-      @app_id = app_id
+      @app = app
       @retry_count = retry_count
-      @options = options
+      @data = data
+      @headers = headers
       @response = http_request
     end
 
     ## Class Methods
-    def self.to_env(name:, url:, token:)
-      info = {
-        url: url,
-        token: token
-      }
-
-      File.open('/.env', 'a') do |file|
-        file.write "mo{'#{name.upcase}':'#{info}'\n}"
-      end
-    end
+    # def self.to_env(name:, url:, token:)
+    #   info = {
+    #     url: url,
+    #     token: token
+    #   }
+    #
+    #   File.open('/.env', 'a') do |file|
+    #     file.write "{'#{name.upcase}':'#{info}'\n}"
+    #   end
+    # end
 
     ## Instance Methods
     def http_request
       validate
       app_data = app_data_fetcher
-
-      Request.new(method, app_data['url'], retry_count)
+      headers.merge!(token: app_data[:token], app_id: app_data[:app_id])
+      Request.new(method, app_data['url'], retry_count, headers, data)
     end
 
     def validate
-      valid_methods = %w[get post put delete]
+      valid_methods = %i[get post put patch delete]
       raise ArgumentError, "#{method} is not a valid method" unless valid_methods.include? method.downcase
       raise ArgumentError, "#{retry_count} is not a valid number (should be > 0)" if retry_count.negative?
-      raise ArgumentError, "#{app_id} is not a valid application name " if ENV["#{app_id}_APP_ID"].nil?
+      # this must be changed later
+      raise ArgumentError, "#{app} is not a valid application name " if ENV["#{app}_APP_ID"].nil?
     end
 
     def app_data_fetcher
-      app_id = ENV["#{app_id}_APP_ID"]
-      url    = ENV["#{app_id}_URL"]
-      token  = ENV["#{app_id}_TOKEN"]
+      app_id = ENV["#{app}_APP_ID"]
+      url    = ENV["#{app}_URL"]
+      token  = ENV["#{app}_TOKEN"]
       Hash[:app_id, app_id, :url, url, :token, token]
     end
   end
