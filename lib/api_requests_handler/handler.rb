@@ -29,7 +29,9 @@ module ApiRequestsHandler
     def http_request
       validate
       app_data = app_data_fetcher
-      headers.merge!(token: app_data[:token], app_id: app_data[:app_id])
+
+      # headers.merge!(token: app_data[:token], app_id: app_data[:app_id])
+      puts "Sending request..."
       request = Request.new(method, app_data[:url], retry_count, data, headers)
       request.parsed_response
     end

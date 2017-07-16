@@ -27,10 +27,12 @@ module ApiRequestsHandler
       case method
       when :get, :delete
         uri.query = URI.encode_www_form(data)
-        http.method(method).call(uri)
+        response = http.method(method).call(uri)
       when :post, :put, :patch
-        http.method(method).call(uri, data.to_json)
+        response = http.method(method).call(uri, data.to_json)
       end
+
+      return response if response.is_a? Net::HTTPSuccess
     end
   end
 end
