@@ -32,7 +32,7 @@ module ApiRequestsHandler
         response = http.method(method).call(uri, data.to_json)
       end
 
-      return response if response.is_a? Net::HTTPSuccess
+      response
     end
   end
 end

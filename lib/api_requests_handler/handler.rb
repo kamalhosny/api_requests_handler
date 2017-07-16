@@ -33,7 +33,9 @@ module ApiRequestsHandler
       # headers.merge!(token: app_data[:token], app_id: app_data[:app_id])
       puts "Sending request..."
       request = Request.new(method, app_data[:url], retry_count, data, headers)
-      request.parsed_response
+
+      return request.parsed_response if request.response.is_a? Net::HTTPSuccess
+      Logger.new(STDOUT).error request.parsed_response['error']['message']
     end
 
     def validate
