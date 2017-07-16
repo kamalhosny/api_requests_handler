@@ -7,7 +7,7 @@ require 'api_requests_handler/version'
 Gem::Specification.new do |spec|
   spec.name          = 'api_requests_handler'
   spec.version       = ApiRequestsHandler::VERSION
-  spec.authors       = %w[kamalhosny youssefsobhy]
+  spec.authors       = %w(kamalhosny youssefsobhy)
   spec.email         = ['kamal-aldin-hosny@hotmail.com']
 
   spec.summary       = ''
