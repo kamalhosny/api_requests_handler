@@ -1,4 +1,4 @@
-module HttpClient
+module HttpAwesome
   class Request
     ## Attributes
     attr_accessor :method, :app, :retry_count, :data, :headers, :response
@@ -13,6 +13,8 @@ module HttpClient
       @success_block = success_block
       @response = http_request
     end
+
+    private
 
     ## Instance Methods
     def http_request
