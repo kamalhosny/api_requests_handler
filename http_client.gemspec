@@ -2,12 +2,12 @@
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'api_requests_handler/version'
+require 'http_client/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'api_requests_handler'
-  spec.version       = ApiRequestsHandler::VERSION
-  spec.authors       = %w(kamalhosny youssefsobhy)
+  spec.name          = 'http_client'
+  spec.version       = HttpClient::VERSION
+  spec.authors       = %w[kamalhosny youssefsobhy]
   spec.email         = ['kamal-aldin-hosny@hotmail.com']
 
   spec.summary       = ''

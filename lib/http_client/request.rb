@@ -1,5 +1,5 @@
-module ApiRequestsHandler
-  class Handler
+module HttpClient
+  class Request
     ## Attributes
     attr_accessor :method, :app, :retry_count, :data, :headers, :response
 
@@ -18,21 +18,17 @@ module ApiRequestsHandler
     def http_request
       validate
       app_data = app_data_fetcher
-
       headers.merge!(token: app_data[:token], app_id: app_data[:app_id])
 
       begin
         Logger.new(STDOUT).info 'Sending request...'
-        request = Request.new(method, app_data[:url], retry_count, data, headers)
+        request = Execute.new(method, app_data[:url], retry_count, data, headers)
 
         if request.response.is_a? Net::HTTPSuccess
           @success_block.call if block_given?
-
           return request.parsed_response
         end
-
         raise "#{request.response.code} #{request.response.message}"
-
       rescue StandardError => e
         Logger.new(STDOUT).error e.message
 
@@ -42,12 +38,11 @@ module ApiRequestsHandler
           sleep 2
           retry
         end
-
       end
     end
 
     def validate
-      valid_methods = %i(get post put patch delete)
+      valid_methods = %i[get post put patch delete]
       raise ArgumentError, "#{method} is not a valid method" unless valid_methods.include? method.downcase
       raise ArgumentError, "#{retry_count} is not a valid number (should be > 0)" if retry_count.negative?
       # this must be changed later

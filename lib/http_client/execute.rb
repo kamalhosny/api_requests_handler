@@ -1,5 +1,5 @@
-module ApiRequestsHandler
-  class Request
+module HttpClient
+  class Execute
     ## Attributes
     attr_accessor :method, :uri, :retry_count, :data, :headers, :response
 
