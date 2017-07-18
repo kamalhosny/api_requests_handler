@@ -18,7 +18,10 @@ module HttpClient
     def http_request
       validate
       app_data = app_data_fetcher
-      headers.merge!(token: app_data[:token], app_id: app_data[:app_id])
+
+      app_data[:headers].each do |key, value|
+        headers.merge!(Hash[key, value]) unless value.nil?
+      end
 
       begin
         Logger.new(STDOUT).info 'Sending request...'
@@ -46,7 +49,7 @@ module HttpClient
       raise ArgumentError, "#{method} is not a valid method" unless valid_methods.include? method.downcase
       raise ArgumentError, "#{retry_count} is not a valid number (should be > 0)" if retry_count.negative?
       # this must be changed later
-      raise ArgumentError, "#{app} is not a valid application name " if ENV["#{app}_APP_ID"].nil?
+      raise ArgumentError, 'make sure the name you are entering matches the name in .env file' if ENV["#{app}_URL"].nil?
     end
 
     def app_data_fetcher
@@ -54,7 +57,7 @@ module HttpClient
       url    = ENV["#{app}_URL"]
       token  = ENV["#{app}_TOKEN"]
 
-      Hash[:app_id, app_id, :url, url, :token, token]
+      Hash[:headers, { app_id: app_id, token: token }, :url, url]
     end
   end
 end
